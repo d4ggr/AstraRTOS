@@ -28,6 +28,13 @@ The problem with this is that the flash memory is not fast enough to keep up, fl
 
 After system clock is defined it is distibuted into 3 buses AHB (180MHz), APB1 (45MHz) and APB2 (90MHz), which are each specified for specific peripherals
 
+## System Ticks
+Now to set a global clock which can be used as the local time by a developer we need to define system ticks, using the system clock we configure the SYSTICK register
+
+SYSTICK starts from 179999, counts down every system clock cycle until 0 then calls an interrupt, reloads the clock back to 179999 and cycle repeats. 
+
+Since system clock runs at 180 MHz, counting from 179999 to 0 takes 1ms. So when we reach 0 the SysTick_Handler interrupt fires. Inside the handler we just increment global clock `system_ticks` and when any part of the RTOS requires to measure time it just reads this variable   
+
 ## Register Sequence
 
 Flow of `system_init()` is as follows:
@@ -38,3 +45,4 @@ Flow of `system_init()` is as follows:
 4. Enable PLL, `RCC_CR` bit 24 and wait bit 25
 5. Set bus prescalers
 6. Switch SYSCLK to follow PLL
+7. Global clock initialised
