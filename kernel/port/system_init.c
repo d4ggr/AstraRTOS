@@ -6,6 +6,14 @@
 #define RCC_CFGR (*(volatile uint32_t*)(RCC_BASE + 0x08))
 #define FLASH_ACR (*(volatile uint32_t*)(0x40023C00))
 
+#define SYSTICK_BASE 0xE000E010
+#define STK_CTRL (*(volatile uint32_t *)(SYSTICK_BASE + 0x00))
+#define STK_LOAD (*(volatile uint32_t *)(SYSTICK_BASE + 0x04))
+#define STK_VAL (*(volatile uint32_t *)(SYSTICK_BASE + 0x08))
+#define STK_CALIB (*(volatile uint32_t *)(SYSTICK_BASE + 0x0C)) 
+
+static int system_tick;
+
 void system_init(void){
     RCC_CR = RCC_CR | (1 << 16); // enable HSE clock using HSEON flag 
     while(!(RCC_CR & (1 << 17))); // wait for ready flag to become 1 (HSERDY)
@@ -35,4 +43,19 @@ void system_init(void){
        SWS = 1 -> HSE is used
        SWS = 2 -> PLL is used 
     */ 
+}
+
+void systick_init(void){
+    STK_LOAD = (180000 - 1) << 0; // clock resets every 1ms
+
+
+    STK_VAL = (0 << 0);      // start from 0
+
+    STK_CTRL = (1 << 2) |   // processor clock used
+               (1 << 1) |   // asserts the SysTick exception request
+               (1 << 0);    // enable counter  
+}
+
+void SysTick_Handler(void){
+    system_tick++;  // update every 1ms
 }
