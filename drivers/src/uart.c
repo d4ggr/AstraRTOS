@@ -1,6 +1,7 @@
 #include "uart.h"
 #include "rcc.h"
 #include "gpio.h"
+#include "system_init.h"
 
 //Starts only UART2
 void uart_init(void){
@@ -38,11 +39,13 @@ void uart_send_string(char *str){
 }
 
 int uart_receive_char(void){
-    int timeout = 0; //Internal timeout of function
+
+    uint32_t initial_ticks = system_ticks;
 
     while(!(USART2_SR & (1 << 5))){ //Checking bit 5 of SR
-        timeout++;
-        if(timeout >= TIMEOUT) return -1; //Timeout if nothing is received
+        if(system_ticks - initial_ticks >= TIMEOUT){
+            return -1; //Timeout if nothing is received (after 1 sec)
+        }
     }
 
     return (int)(USART2_DR & 0xFF);

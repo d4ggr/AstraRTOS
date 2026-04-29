@@ -19,7 +19,7 @@ LDSCRIPT = link/stm32f429zi.ld
 MCU = -mcpu=cortex-m4 -mthumb -mfloat-abi=soft
 
 CFLAGS  = $(MCU) -Wall -Wextra -Og -g -ffreestanding -nostdlib
-CFLAGS += -I drivers/include
+CFLAGS += -I drivers/include -I kernel/port
 ASFLAGS = $(MCU) -Wall
 LDFLAGS = $(MCU) -T$(LDSCRIPT) -nostdlib -nostartfiles -Wl,--gc-sections -Wl,-Map=$(BUILD)/$(TARGET).map
 

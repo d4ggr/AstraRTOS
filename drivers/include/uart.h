@@ -10,7 +10,7 @@
 #define USART2_CR1 (*(volatile uint32_t*)(USART2_BASE + 0x0C))
 #define USART2_CR2 (*(volatile uint32_t*)(USART2_BASE + 0x10))
 
-#define TIMEOUT 100000
+#define TIMEOUT 1000
 
 void uart_init(void);
 void uart_send_char(char c);
